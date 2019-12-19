@@ -1,0 +1,25 @@
+version: '3'
+services:
+  mysql-server:
+    image: 'mysql:5.7'
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=db_example
+    ports:
+      - 127.0.0.1:3306:3306
+    volumes:
+      - 'mysqldata:/var/lib/mysql'
+
+  phpmyadmin:
+    image: 'phpmyadmin/phpmyadmin'
+    links:
+      - 'mysql-server:db'
+    environment:
+      - PMA_USER=root
+      - PMA_PASSWORD=root
+    ports:
+      - 127.0.0.1:11001:80
+
+volumes:
+  mysqldata:
+    driver: local

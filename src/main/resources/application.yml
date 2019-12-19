@@ -1,0 +1,12 @@
+micronaut:
+  io:
+    watch:
+      paths: src/main
+      restart: true
+
+datasources:
+  default:
+    url: ${JDBC_URL:`jdbc:mysql://127.0.0.1/db_example?useSSL=false`}
+    username: ${JDBC_USER:root}
+    password: ${JDBC_PASSWORD:root}
+    driverClassName: ${JDBC_DRIVER:com.mysql.jdbc.Driver}

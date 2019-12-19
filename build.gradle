@@ -1,0 +1,72 @@
+plugins {
+    id "net.ltgt.apt-eclipse" version "0.21"
+    id "com.github.johnrengelman.shadow" version "5.0.0"
+    id "application"
+}
+
+
+
+version "0.1"
+group "example"
+
+repositories {
+    mavenCentral()
+    maven { url "https://jcenter.bintray.com" }
+}
+
+configurations {
+    // for dependencies that are needed for development only
+    developmentOnly 
+}
+
+dependencies {
+    annotationProcessor 'io.micronaut.data:micronaut-data-processor:1.0.0.M5'
+
+    annotationProcessor "io.micronaut:micronaut-inject-java"
+    annotationProcessor platform("io.micronaut:micronaut-bom:$micronautVersion")
+    annotationProcessor "io.micronaut:micronaut-validation"
+
+    testAnnotationProcessor "io.micronaut:micronaut-inject-java:$micronautVersion"
+    implementation platform("io.micronaut:micronaut-bom:$micronautVersion")
+    implementation "io.micronaut:micronaut-inject"
+    implementation "io.micronaut:micronaut-validation"
+    implementation "io.micronaut:micronaut-runtime"
+    implementation "io.micronaut:micronaut-http-server-netty"
+    implementation "io.micronaut:micronaut-http-client"
+
+    runtimeOnly "ch.qos.logback:logback-classic:1.2.3"
+
+    compile 'io.micronaut.data:micronaut-data-jdbc:1.0.0.M5'
+
+    runtime 'io.micronaut.configuration:micronaut-jdbc-hikari'
+    compile group: 'mysql', name: 'mysql-connector-java', version:'5.1.47'
+
+//    runtime "org.springframework:spring-jdbc"
+//    compile 'io.micronaut.data:micronaut-data-spring:1.0.0.M5'
+
+    compile group: 'io.micronaut.test', name: 'micronaut-test-core', version: '1.1.1'
+    testImplementation "org.junit.jupiter:junit-jupiter-api"
+    testCompile "io.micronaut.test:micronaut-test-junit5:1.1.1"
+    testCompile "org.mockito:mockito-junit-jupiter:2.22.0"
+    testRuntime "org.junit.jupiter:junit-jupiter-engine:5.1.0"
+    compile 'io.micronaut:micronaut-http-client'
+}
+
+test.classpath += configurations.developmentOnly
+
+mainClassName = "example.Application"
+// use JUnit 5 platform
+test {
+    useJUnitPlatform()
+}
+tasks.withType(JavaCompile){
+    options.encoding = "UTF-8"
+    options.compilerArgs.add('-parameters')
+}
+
+shadowJar {
+    mergeServiceFiles()
+}
+
+run.classpath += configurations.developmentOnly
+run.jvmArgs('-noverify', '-XX:TieredStopAtLevel=1', '-Dcom.sun.management.jmxremote')
